@@ -163,6 +163,13 @@ const PatientHistoryPage = () => {
                       </button>
                     </div>
                     
+                    {item.patient_name && (
+                      <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-text-primary)] mb-1">
+                        <User size={14} />
+                        {item.patient_name}
+                      </div>
+                    )}
+                    
                     <div className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)] mb-1">
                       <Calendar size={12} />
                       {formatDate(item.timestamp)}
@@ -212,6 +219,19 @@ const PatientHistoryPage = () => {
                   <Calendar size={16} />
                   <span>{formatDate(selectedItem.timestamp)}</span>
                 </div>
+
+                {/* Patient Name */}
+                {selectedItem.patient_name && (
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <User size={16} className="text-blue-600" />
+                      <div>
+                        <p className="text-xs text-blue-600">Patient Name</p>
+                        <p className="text-sm font-semibold text-blue-900">{selectedItem.patient_name}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Patient Summary */}
                 <div className="p-4 bg-[var(--color-mint)] rounded-lg">

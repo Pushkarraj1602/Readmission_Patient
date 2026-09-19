@@ -49,7 +49,7 @@ const PredictionPage = () => {
         <div className="absolute right-5 top-1/2 -translate-y-1/2 bg-[#F7F5EF]/95 backdrop-blur-sm rounded-2xl px-5 py-4 max-w-[200px] shadow-sm border border-[var(--color-border)]">
           <span className="text-[var(--color-amber)] text-3xl font-bold leading-none block mb-1">"</span>
           <p className="text-[12px] text-[var(--color-text-primary)] leading-[1.5] font-medium">
-            Data-driven care leads to more time for what truly matters — the patient.
+            Data-driven care leads to more time for what truly matters - the patient.
           </p>
           <div className="w-6 h-[3px] bg-[var(--color-forest)] rounded-full mt-2.5"></div>
         </div>

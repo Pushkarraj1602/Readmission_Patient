@@ -1,4 +1,4 @@
-# MediMind — Hospital Readmission Risk Prediction System
+# MediMind - Hospital Readmission Risk Prediction System
 
 MediMind is a full-stack, AI-powered clinical decision support application designed to evaluate patient readmission risks, assist healthcare professionals with data-driven insights, and optimize discharge planning. The system combines a modern React frontend with a powerful FastAPI machine learning backend.
 

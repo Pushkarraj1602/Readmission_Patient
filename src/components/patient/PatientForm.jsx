@@ -12,6 +12,7 @@ const INSULIN_OPTIONS = ["No", "Down", "Steady", "Up"];
 
 const PatientForm = ({ onSubmit, loading }) => {
   const [form, setForm] = useState({
+    patient_name: "",
     age: 65,
     gender: "Male",
     diag_1: "Circulatory",
@@ -37,6 +38,7 @@ const PatientForm = ({ onSubmit, loading }) => {
 
   const handleReset = () => {
     setForm({
+      patient_name: "",
       age: 65, gender: "Male", diag_1: "Circulatory", time_in_hospital: 4,
       num_lab_procedures: 40, num_procedures: 1, n_inpatient: 0, n_emergency: 0,
       n_outpatient: 0, num_medications: 15, number_diagnoses: 7, insulin: "No",
@@ -46,54 +48,19 @@ const PatientForm = ({ onSubmit, loading }) => {
 
   return (
     <Card className="flex flex-col h-full">
-      <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--color-border)]">
-        <div className="w-12 h-12 rounded-xl bg-[var(--color-mint)] flex items-center justify-center text-[var(--color-forest)]">
-          <Home size={24} />
-        </div>
-        <div>
-          <h2 className="text-[16px] font-semibold text-[var(--color-text-primary)]">Patient Information</h2>
-          <p className="text-sm text-[var(--color-text-secondary)]">Enter the patient details below to predict readmission risk</p>
-        </div>
-      </div>
-
       <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between">
-        {/* Model Selection and RAG Toggle */}
-        <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-[var(--color-mint)] to-[var(--color-sky)] border border-[var(--color-border)]">
-          <h3 className="text-sm font-semibold text-[var(--color-forest)] mb-3">Model Configuration</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField label="Select ML Model" icon={Sparkles}>
-              <select
-                value={form.model_type}
-                onChange={(e) => update("model_type")(e.target.value)}
-                className="w-full px-4 py-3 bg-white border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-forest)]"
-              >
-                <option value="random_forest">Random Forest (Recommended)</option>
-                <option value="logistic_regression">Logistic Regression</option>
-              </select>
-            </FormField>
-            
-            <FormField label="RAG Feature (Similar Cases)" icon={Users}>
-              <div className="flex items-center gap-3 h-[48px]">
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={form.use_rag}
-                    onChange={(e) => update("use_rag")(e.target.checked)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[var(--color-mint)] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-forest)]"></div>
-                  <span className="ml-3 text-sm font-medium text-[var(--color-text-primary)]">
-                    {form.use_rag ? "Enabled" : "Disabled"}
-                  </span>
-                </label>
-              </div>
-            </FormField>
-          </div>
-          <p className="text-xs text-[var(--color-text-secondary)] mt-2">
-            {form.use_rag 
-              ? "✓ Using similar patient cases to enhance prediction accuracy" 
-              : "⚠ Predicting without similar case analysis (may be less accurate)"}
-          </p>
+        {/* Patient Name Field */}
+        <div className="mb-6">
+          <FormField label="Patient Name" icon={User}>
+            <input
+              type="text"
+              value={form.patient_name}
+              onChange={(e) => update("patient_name")(e.target.value)}
+              placeholder="Enter patient full name"
+              className="w-full px-4 py-3 bg-white border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-forest)] text-[var(--color-text-primary)]"
+              required
+            />
+          </FormField>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-8">
@@ -144,6 +111,79 @@ const PatientForm = ({ onSubmit, loading }) => {
           <FormField label="Insulin" icon={Syringe}>
             <SelectInput value={form.insulin} onChange={update("insulin")} options={INSULIN_OPTIONS} />
           </FormField>
+        </div>
+
+        {/* Model Configuration */}
+        <div className="mb-6 p-5 rounded-xl bg-gradient-to-br from-[var(--color-mint)] via-white to-[var(--color-sky)] border-2 border-[var(--color-forest)]/10 shadow-sm">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 rounded-lg bg-[var(--color-forest)] flex items-center justify-center">
+              <Sparkles size={18} className="text-white" />
+            </div>
+            <h3 className="text-base font-bold text-[var(--color-forest)]">Model Configuration</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* ML Model Selection Card */}
+            <div className="bg-white rounded-lg p-4 border border-[var(--color-border)] shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles size={16} className="text-[var(--color-forest)]" />
+                <label className="text-sm font-semibold text-[var(--color-text-primary)]">ML Model</label>
+              </div>
+              <select
+                value={form.model_type}
+                onChange={(e) => update("model_type")(e.target.value)}
+                className="w-full px-3 py-2.5 bg-[var(--color-mint)]/20 border border-[var(--color-forest)]/20 rounded-lg text-sm font-medium text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-forest)] focus:border-transparent transition-all cursor-pointer"
+              >
+                <option value="random_forest">🌲 Random Forest (Recommended)</option>
+                <option value="logistic_regression">📊 Logistic Regression</option>
+              </select>
+              <p className="text-xs text-[var(--color-text-secondary)] mt-2">
+                {form.model_type === "random_forest" ? "High accuracy ensemble method" : "Fast linear classification model"}
+              </p>
+            </div>
+            
+            {/* RAG Feature Card */}
+            <div className="bg-white rounded-lg p-4 border border-[var(--color-border)] shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 mb-3">
+                <Users size={16} className="text-[var(--color-forest)]" />
+                <label className="text-sm font-semibold text-[var(--color-text-primary)]">Similar Cases Analysis</label>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer w-full">
+                <input
+                  type="checkbox"
+                  checked={form.use_rag}
+                  onChange={(e) => update("use_rag")(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-14 h-7 bg-gray-300 peer-focus:outline-none peer-focus:ring-3 peer-focus:ring-[var(--color-mint)] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-forest)] shadow-inner"></div>
+                <span className="ml-3 text-sm font-semibold text-[var(--color-text-primary)]">
+                  {form.use_rag ? "✓ Enabled" : "✗ Disabled"}
+                </span>
+              </label>
+              <p className="text-xs text-[var(--color-text-secondary)] mt-2">
+                {form.use_rag 
+                  ? "Using RAG to find similar patient cases" 
+                  : "Prediction without historical case analysis"}
+              </p>
+            </div>
+          </div>
+          
+          {/* Info Banner */}
+          <div className={`mt-4 px-4 py-2.5 rounded-lg ${form.use_rag ? 'bg-[var(--color-forest)]/10 border border-[var(--color-forest)]/20' : 'bg-orange-50 border border-orange-200'}`}>
+            <p className="text-xs font-medium text-[var(--color-text-primary)] flex items-center gap-2">
+              {form.use_rag ? (
+                <>
+                  <span className="text-green-600 font-bold">✓</span>
+                  Enhanced accuracy mode: Analyzing similar historical cases to improve prediction reliability
+                </>
+              ) : (
+                <>
+                  <span className="text-orange-500 font-bold">⚠</span>
+                  Standard mode: Predictions based on model training only (similar case analysis disabled)
+                </>
+              )}
+            </p>
+          </div>
         </div>
 
         <div className="flex gap-4">

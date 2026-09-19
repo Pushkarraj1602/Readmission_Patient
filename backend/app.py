@@ -55,7 +55,7 @@ def set_category(row, prefix, value):
     if target_col in row:
         row[target_col] = 1
     # if target_col doesn't exist, it means `value` is the dropped reference
-    # category from one-hot encoding — leaving everything 0 is correct
+    # category from one-hot encoding - leaving everything 0 is correct
 
 # ── Build the UI ──
 st.title("Hospital Readmission Risk Predictor")
@@ -86,7 +86,7 @@ with st.form("patient_form"):
 if submitted:
     insulin_map = {'No': 0, 'Down': 1, 'Steady': 2, 'Up': 3}
 
-    # 1. Build summary text (diag_2 defaults to "Other" — not user-collected)
+    # 1. Build summary text (diag_2 defaults to "Other" - not user-collected)
     summary = make_summary(age, gender, n_inpatient, n_emergency, n_outpatient,
                             diag_1, "Other", num_medications, time_in_hospital, number_diagnoses)
 
@@ -129,7 +129,7 @@ if submitted:
     with risk_col:
         st.metric("30-day readmission risk", f"{risk_prob*100:.1f}%")
         if is_high_risk:
-            st.error("⚠️ High Risk — flagged for review")
+            st.error("⚠️ High Risk - flagged for review")
         else:
             st.success("✅ Lower Risk")
 
@@ -139,4 +139,4 @@ if submitted:
     st.caption(f"Generated patient summary used for retrieval: _{summary}_")
 
 st.divider()
-st.caption("This model predicts readmission risk specifically for patients with a diabetes diagnosis during their hospital stay — not a general-purpose readmission predictor.")
+st.caption("This model predicts readmission risk specifically for patients with a diabetes diagnosis during their hospital stay - not a general-purpose readmission predictor.")
