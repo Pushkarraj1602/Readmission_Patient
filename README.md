@@ -1,12 +1,12 @@
-# MediMind - Hospital Readmission Risk Prediction System
+# MaveRicks - Hospital Readmission Risk Prediction System
 
-MediMind is a full-stack, AI-powered clinical decision support application designed to evaluate patient readmission risks, assist healthcare professionals with data-driven insights, and optimize discharge planning. The system combines a modern React frontend with a powerful FastAPI machine learning backend.
+MaveRicks is a full-stack, AI-powered clinical decision support application designed to evaluate patient readmission risks, assist healthcare professionals with data-driven insights, and optimize discharge planning. The system combines a modern React frontend with a powerful FastAPI machine learning backend.
 
 ---
 
 ## 🎯 Project Overview
 
-This repository contains both the **frontend** (React/Vite) and **backend** (FastAPI/Python) components of the MediMind hospital readmission prediction system.
+This repository contains both the **frontend** (React/Vite) and **backend** (FastAPI/Python) components of the MaveRicks hospital readmission prediction system.
 
 ### **Frontend Features**
 
@@ -33,7 +33,7 @@ This repository contains both the **frontend** (React/Vite) and **backend** (Fas
   - Appearance preferences & Security actions.
 
 - **Modern & Responsive UI/UX**:
-  - Fixed sidebar with quick navigation and MediMind branding.
+  - Fixed sidebar with quick navigation and MaveRicks branding.
   - Fixed compact top navigation header.
   - Built with TailwindCSS v4 and Lucide icons for a clean healthcare aesthetic.
 
@@ -74,7 +74,7 @@ This repository contains both the **frontend** (React/Vite) and **backend** (Fas
 ## 📁 Project Structure
 
 ```text
-MediMind/
+MaveRicks/
 ├── backend/                      # Backend API and ML models
 │   ├── api.py                    # FastAPI REST API implementation
 │   ├── app.py                    # Streamlit standalone dashboard (optional)
@@ -145,7 +145,7 @@ This tells the frontend where to find the backend API server.
 
 ```bash
 git clone <repository-url>
-cd MediMind
+cd MaveRicks
 ```
 
 ### Step 2: Setup Backend

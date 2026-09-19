@@ -15,7 +15,7 @@ const Sidebar = () => {
           <Leaf size={28} />
         </div>
         <div>
-          <h1 className="text-xl font-bold font-display leading-none mb-1">MediMind</h1>
+          <h1 className="text-xl font-bold font-display leading-none mb-1">MaveRicks</h1>
           <p className="text-[10px] text-white/70 uppercase tracking-widest">Insights for Health</p>
         </div>
       </div>

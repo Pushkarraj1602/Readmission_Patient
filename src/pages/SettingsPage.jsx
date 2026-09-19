@@ -9,7 +9,7 @@ const SettingsPage = () => {
 
   const [profile, setProfile] = useState({
     name: "Dr. Pushkar raj",
-    email: "dr.sharma@hospital.com",
+    email: "testmail@gmail.com",
     phone: "+91 98765 43210",
     role: "Hospital Physician",
     department: "Internal Medicine",
