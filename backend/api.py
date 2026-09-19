@@ -276,3 +276,136 @@ def get_models_info():
         "threshold": BEST_THRESHOLD
     }
 
+
+# ── Generate Report endpoint ──
+@app.post("/generate-report")
+def generate_report(data: dict):
+    """Generate a text-based medical report for download"""
+    from datetime import datetime
+    
+    report = f"""
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                    HOSPITAL READMISSION RISK ASSESSMENT                    ║
+║                              CLINICAL REPORT                               ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+Report Generated: {datetime.now().strftime("%B %d, %Y at %I:%M %p")}
+Report ID: MR-{datetime.now().strftime("%Y%m%d-%H%M%S")}
+
+─────────────────────────────────────────────────────────────────────────────
+ PATIENT INFORMATION
+─────────────────────────────────────────────────────────────────────────────
+
+{data.get('summary', 'N/A')}
+
+─────────────────────────────────────────────────────────────────────────────
+ RISK ASSESSMENT
+─────────────────────────────────────────────────────────────────────────────
+
+Readmission Risk Probability:  {data.get('risk_probability', 0) * 100:.1f}%
+Risk Classification:           {"HIGH RISK" if data.get('is_high_risk', False) else "LOW RISK"}
+Similar Case Readmit Rate:     {data.get('similar_case_readmit_rate', 0) * 100:.1f}%
+
+Model Used:                    {data.get('model_used', 'Random Forest')}
+RAG Feature:                   {"Enabled" if data.get('rag_enabled', True) else "Disabled"}
+
+─────────────────────────────────────────────────────────────────────────────
+ MODEL PERFORMANCE METRICS
+─────────────────────────────────────────────────────────────────────────────
+
+AUC-ROC Score:                 {data.get('model_metrics', {}).get('auc_roc', 0) * 100:.1f}%
+F1 Score:                      {data.get('model_metrics', {}).get('f1_score', 0) * 100:.1f}%
+Precision:                     {data.get('model_metrics', {}).get('precision', 0) * 100:.1f}%
+Recall:                        {data.get('model_metrics', {}).get('recall', 0) * 100:.1f}%
+
+─────────────────────────────────────────────────────────────────────────────
+ CLINICAL RECOMMENDATIONS
+─────────────────────────────────────────────────────────────────────────────
+
+"""
+    
+    if data.get('is_high_risk', False):
+        report += """
+⚠ HIGH RISK PATIENT - Immediate Action Required
+
+Recommended Interventions:
+• Schedule close follow-up within 7 days of discharge
+• Conduct comprehensive medication reconciliation
+• Arrange home health services if appropriate
+• Provide detailed discharge instructions and education
+• Consider care coordination with primary care physician
+• Monitor for early warning signs of deterioration
+• Ensure patient has 24/7 access to clinical support
+
+Additional Considerations:
+• Review and optimize medication regimen
+• Assess social determinants of health
+• Evaluate need for post-acute care services
+• Consider telemedicine follow-up options
+"""
+    else:
+        report += """
+✓ LOW RISK PATIENT - Standard Discharge Protocol
+
+Recommended Actions:
+• Standard follow-up within 14-30 days
+• Provide routine discharge instructions
+• Ensure understanding of medication regimen
+• Schedule appointment with primary care physician
+• Provide emergency contact information
+
+Preventive Measures:
+• Educate on signs and symptoms requiring medical attention
+• Encourage medication adherence
+• Promote healthy lifestyle modifications
+• Ensure patient has necessary prescriptions filled
+"""
+
+    report += """
+─────────────────────────────────────────────────────────────────────────────
+ METHODOLOGY
+─────────────────────────────────────────────────────────────────────────────
+
+This prediction was generated using machine learning models trained on the
+UCI Diabetes 130-Hospitals dataset. The analysis incorporates:
+
+• Patient demographic and clinical characteristics
+• Historical admission patterns
+• Medication and procedure history
+"""
+
+    if data.get('rag_enabled', True):
+        report += """• Retrieval-Augmented Generation (RAG) feature: Analysis of 10 most
+  similar historical patient cases to enhance prediction accuracy
+"""
+
+    report += f"""
+Threshold for High Risk Classification: {BEST_THRESHOLD * 100:.0f}%
+
+─────────────────────────────────────────────────────────────────────────────
+ DISCLAIMER
+─────────────────────────────────────────────────────────────────────────────
+
+This AI-generated risk assessment is intended to support clinical decision-
+making and should not replace professional medical judgment. All predictions
+should be interpreted in the context of the individual patient's complete
+clinical picture and circumstances.
+
+The treating physician retains full responsibility for patient care decisions
+and should use this tool as one of many inputs in the clinical decision-making
+process.
+
+─────────────────────────────────────────────────────────────────────────────
+
+Generated by MediMind Hospital Readmission Risk Prediction System
+Powered by Random Forest & Logistic Regression ML Models with RAG Enhancement
+
+End of Report
+"""
+    
+    return {
+        "report": report,
+        "filename": f"readmission_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    }
+
+
