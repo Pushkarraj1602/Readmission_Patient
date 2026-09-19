@@ -31,9 +31,9 @@ const PredictionPage = () => {
 
   return (
     <DashboardLayout>
-
-      {/* Hero Banner Area */}
-      <div className="relative w-full h-[160px] rounded-[24px] overflow-hidden mb-8 shadow-sm border border-[var(--color-border)]">
+      <div className="max-w-7xl mx-auto">
+        {/* Hero Banner Area */}
+        <div className="relative w-full h-[160px] rounded-[24px] overflow-hidden mb-8 shadow-sm border border-[var(--color-border)]">
         <img 
           src={heroImg} 
           alt="Healthcare hero" 
@@ -66,24 +66,25 @@ const PredictionPage = () => {
         </div>
       </div>
 
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 font-medium">
-           {error}
-        </div>
-      )}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 font-medium">
+             {error}
+          </div>
+        )}
 
-      {/* Main Grid - Better spacing */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start max-w-[1600px] mx-auto">
-        <PatientForm onSubmit={handlePredict} loading={loading} />
-        
-        <div className="xl:sticky xl:top-6">
-          {loading ? (
-            <PredictionLoadingState />
-          ) : data ? (
-            <PredictionResults data={data} />
-          ) : (
-            <PredictionInitialState />
-          )}
+        {/* Main Grid - Better spacing */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
+          <PatientForm onSubmit={handlePredict} loading={loading} />
+          
+          <div className="xl:sticky xl:top-6">
+            {loading ? (
+              <PredictionLoadingState />
+            ) : data ? (
+              <PredictionResults data={data} />
+            ) : (
+              <PredictionInitialState />
+            )}
+          </div>
         </div>
       </div>
     </DashboardLayout>

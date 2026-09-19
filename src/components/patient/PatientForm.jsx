@@ -159,35 +159,36 @@ const PatientForm = ({ onSubmit, loading }) => {
           </h3>
           
           <div className="bg-gradient-to-br from-[var(--color-mint)] to-[var(--color-sage-light)] p-5 rounded-xl border-2 border-[var(--color-forest)]/10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Model Selection */}
-              <div>
+            <div className="flex items-end gap-4">
+              {/* Model Selection - Expanded */}
+              <div className="flex-1">
                 <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">
                   ML Model
                 </label>
                 <select
                   value={form.model_type}
                   onChange={(e) => update("model_type")(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border-2 border-[var(--color-forest)]/30 rounded-lg text-sm font-semibold text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-forest)] focus:border-[var(--color-forest)] hover:border-[var(--color-forest)]/50 transition-all cursor-pointer shadow-sm"
+                  className="w-full px-4 py-3 bg-white border-2 border-[var(--color-forest)]/30 rounded-lg text-sm font-semibold text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-forest)] focus:border-[var(--color-forest)] hover:border-[var(--color-forest)]/50 transition-all cursor-pointer shadow-sm appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23526560%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:18px] bg-[right_1rem_center] bg-no-repeat pr-10"
+                  style={{
+                    WebkitAppearance: 'none',
+                    MozAppearance: 'none'
+                  }}
                 >
                   <option value="random_forest">Random Forest (Recommended)</option>
                   <option value="logistic_regression">Logistic Regression</option>
                 </select>
               </div>
               
-              {/* RAG Toggle */}
-              <div>
+              {/* RAG Toggle - Compact */}
+              <div className="flex flex-col">
                 <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">
-                  Similar Cases Analysis (RAG)
+                  RAG
                 </label>
                 <label 
-                  className="flex items-center gap-3 px-4 py-3 bg-white border-2 border-[var(--color-forest)]/30 rounded-lg cursor-pointer hover:border-[var(--color-forest)]/50 transition-all shadow-sm"
+                  className="flex items-center justify-center bg-white border-2 border-[var(--color-forest)]/30 rounded-lg cursor-pointer hover:border-[var(--color-forest)]/50 transition-all shadow-sm w-16 h-[50px]"
                   onClick={(e) => {
                     e.preventDefault();
-                    const checkbox = e.currentTarget.querySelector('input[type="checkbox"]');
-                    if (checkbox) {
-                      update("use_rag")(!form.use_rag);
-                    }
+                    update("use_rag")(!form.use_rag);
                   }}
                 >
                   <input
@@ -200,10 +201,7 @@ const PatientForm = ({ onSubmit, loading }) => {
                     className="sr-only peer"
                     tabIndex="-1"
                   />
-                  <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-forest)] relative"></div>
-                  <span className="text-sm font-semibold text-[var(--color-text-primary)]">
-                    {form.use_rag ? "✓ Enabled" : "✗ Disabled"}
-                  </span>
+                  <div className="w-10 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--color-forest)] relative"></div>
                 </label>
               </div>
             </div>

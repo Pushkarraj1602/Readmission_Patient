@@ -28,10 +28,9 @@ const ModelInfoPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="p-8 bg-[var(--color-bg)] min-h-screen">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 rounded-xl bg-[var(--color-mint)] flex items-center justify-center text-[var(--color-forest)]">
               <Brain size={24} />
             </div>
@@ -247,7 +246,6 @@ const ModelInfoPage = () => {
               </div>
             </div>
           </Card>
-        </div>
       </div>
     </DashboardLayout>
   );
