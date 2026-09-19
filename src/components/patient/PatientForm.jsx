@@ -24,6 +24,8 @@ const PatientForm = ({ onSubmit, loading }) => {
     num_medications: 15,
     number_diagnoses: 7,
     insulin: "No",
+    model_type: "random_forest", // New: model selection
+    use_rag: true, // New: RAG feature toggle
   });
 
   const update = (key) => (val) => setForm((prev) => ({ ...prev, [key]: val }));
@@ -38,6 +40,7 @@ const PatientForm = ({ onSubmit, loading }) => {
       age: 65, gender: "Male", diag_1: "Circulatory", time_in_hospital: 4,
       num_lab_procedures: 40, num_procedures: 1, n_inpatient: 0, n_emergency: 0,
       n_outpatient: 0, num_medications: 15, number_diagnoses: 7, insulin: "No",
+      model_type: "random_forest", use_rag: true,
     });
   };
 
@@ -54,6 +57,45 @@ const PatientForm = ({ onSubmit, loading }) => {
       </div>
 
       <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between">
+        {/* Model Selection and RAG Toggle */}
+        <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-[var(--color-mint)] to-[var(--color-sky)] border border-[var(--color-border)]">
+          <h3 className="text-sm font-semibold text-[var(--color-forest)] mb-3">Model Configuration</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField label="Select ML Model" icon={Sparkles}>
+              <select
+                value={form.model_type}
+                onChange={(e) => update("model_type")(e.target.value)}
+                className="w-full px-4 py-3 bg-white border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-forest)]"
+              >
+                <option value="random_forest">Random Forest (Recommended)</option>
+                <option value="logistic_regression">Logistic Regression</option>
+              </select>
+            </FormField>
+            
+            <FormField label="RAG Feature (Similar Cases)" icon={Users}>
+              <div className="flex items-center gap-3 h-[48px]">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.use_rag}
+                    onChange={(e) => update("use_rag")(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[var(--color-mint)] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-forest)]"></div>
+                  <span className="ml-3 text-sm font-medium text-[var(--color-text-primary)]">
+                    {form.use_rag ? "Enabled" : "Disabled"}
+                  </span>
+                </label>
+              </div>
+            </FormField>
+          </div>
+          <p className="text-xs text-[var(--color-text-secondary)] mt-2">
+            {form.use_rag 
+              ? "✓ Using similar patient cases to enhance prediction accuracy" 
+              : "⚠ Predicting without similar case analysis (may be less accurate)"}
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-8">
           <FormField label="Age" icon={User}>
             <SelectInput value={form.age} onChange={(v) => update("age")(Number(v))} options={AGE_OPTIONS} />
