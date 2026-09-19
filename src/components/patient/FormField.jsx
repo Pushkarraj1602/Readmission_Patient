@@ -8,7 +8,7 @@ export const FormField = ({ label, icon: Icon, children }) => {
         {label}
       </label>
       <div className="relative">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-amber)] opacity-80">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-amber)] opacity-80 pointer-events-none z-10">
           <Icon size={18} />
         </div>
         {children}
@@ -21,7 +21,7 @@ export const SelectInput = ({ value, onChange, options, formatOption }) => (
   <select
     value={value}
     onChange={(e) => onChange(e.target.value)}
-    className="input pl-10"
+    className="input pl-12"
   >
     {options.map((opt) => (
       <option key={opt} value={opt}>
@@ -39,7 +39,7 @@ export const NumberInput = ({ value, onChange, min, max }) => (
       max={max}
       value={value}
       onChange={(e) => onChange(Math.min(max, Math.max(min, Number(e.target.value))))}
-      className="input pl-10 pr-12"
+      className="input pl-12 pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
     />
     <div className="absolute right-1 top-1/2 -translate-y-1/2 flex flex-col items-center">
       <button 

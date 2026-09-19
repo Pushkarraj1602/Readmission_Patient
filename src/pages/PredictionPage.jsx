@@ -61,17 +61,19 @@ const PredictionPage = () => {
         </div>
       )}
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-[45%_55%] gap-6 items-stretch">
+      {/* Main Grid - Better spacing */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start max-w-[1600px] mx-auto">
         <PatientForm onSubmit={predict} loading={loading} />
         
-        {loading ? (
-          <PredictionLoadingState />
-        ) : data ? (
-          <PredictionResults data={data} />
-        ) : (
-          <PredictionInitialState />
-        )}
+        <div className="xl:sticky xl:top-6">
+          {loading ? (
+            <PredictionLoadingState />
+          ) : data ? (
+            <PredictionResults data={data} />
+          ) : (
+            <PredictionInitialState />
+          )}
+        </div>
       </div>
     </DashboardLayout>
   );

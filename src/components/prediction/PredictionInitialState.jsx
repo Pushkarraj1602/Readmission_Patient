@@ -4,8 +4,8 @@ import { BarChart3, Users, FileText } from "lucide-react";
 
 const PredictionInitialState = () => {
   return (
-    <Card className="flex flex-col items-center justify-center h-full min-h-[520px] bg-[#F7F9F6] border border-dashed border-[#C5D7C7] rounded-[24px] p-8 text-center relative overflow-hidden">
-      <div className="max-w-[480px] w-full flex flex-col items-center">
+    <Card className="flex flex-col items-center justify-center min-h-[600px] bg-gradient-to-br from-[#F7F9F6] to-white border-2 border-dashed border-[#C5D7C7] rounded-[24px] p-10 text-center relative overflow-hidden">
+      <div className="max-w-[520px] w-full flex flex-col items-center">
         
         {/* Medical Document Illustration */}
         <div className="relative mb-6 flex items-center justify-center">
