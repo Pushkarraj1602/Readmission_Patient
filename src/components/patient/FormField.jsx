@@ -4,7 +4,7 @@ import { User, Calendar, Activity, Syringe, ClipboardList, BedDouble, AlertCircl
 export const FormField = ({ label, icon: Icon, children }) => {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-[13px] font-semibold text-[var(--color-text-primary)]">
+      <label className="text-[13px] font-semibold text-[var(--color-text-primary)] min-h-[32px] leading-tight flex items-start">
         {label}
       </label>
       <div className="relative">

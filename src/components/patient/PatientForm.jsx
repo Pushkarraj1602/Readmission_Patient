@@ -180,14 +180,27 @@ const PatientForm = ({ onSubmit, loading }) => {
                 <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">
                   Similar Cases Analysis (RAG)
                 </label>
-                <label className="flex items-center gap-3 px-4 py-3 bg-white border-2 border-[var(--color-forest)]/30 rounded-lg cursor-pointer hover:border-[var(--color-forest)]/50 transition-all shadow-sm">
+                <label 
+                  className="flex items-center gap-3 px-4 py-3 bg-white border-2 border-[var(--color-forest)]/30 rounded-lg cursor-pointer hover:border-[var(--color-forest)]/50 transition-all shadow-sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const checkbox = e.currentTarget.querySelector('input[type="checkbox"]');
+                    if (checkbox) {
+                      update("use_rag")(!form.use_rag);
+                    }
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={form.use_rag}
-                    onChange={(e) => update("use_rag")(e.target.checked)}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      update("use_rag")(e.target.checked);
+                    }}
                     className="sr-only peer"
+                    tabIndex="-1"
                   />
-                  <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[var(--color-forest)] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-forest)] relative"></div>
+                  <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-forest)] relative"></div>
                   <span className="text-sm font-semibold text-[var(--color-text-primary)]">
                     {form.use_rag ? "✓ Enabled" : "✗ Disabled"}
                   </span>
