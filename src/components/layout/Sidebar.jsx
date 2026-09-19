@@ -33,13 +33,27 @@ const Sidebar = () => {
           <Activity size={20} />
           <span>Predict</span>
         </button>
-        <button className="flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-xl font-medium transition-colors w-full text-left">
+        <button
+          onClick={() => navigate("/history")}
+          className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium mb-1 transition-colors w-full text-left ${
+            isActive("/history")
+              ? "bg-[var(--color-sage-light)] text-[var(--color-forest)]"
+              : "text-white/70 hover:text-white hover:bg-white/5"
+          }`}
+        >
           <FileText size={20} />
           <span>Patient History</span>
         </button>
-        <button className="flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-xl font-medium transition-colors w-full text-left">
+        <button
+          onClick={() => navigate("/model-info")}
+          className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full text-left ${
+            isActive("/model-info")
+              ? "bg-[var(--color-sage-light)] text-[var(--color-forest)]"
+              : "text-white/70 hover:text-white hover:bg-white/5"
+          }`}
+        >
           <BarChart3 size={20} />
-          <span>Insights</span>
+          <span>Model Info</span>
         </button>
         <button className="flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-xl font-medium transition-colors w-full text-left">
           <BookOpen size={20} />

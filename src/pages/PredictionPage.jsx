@@ -5,10 +5,18 @@ import PredictionResults from "../components/prediction/PredictionResults";
 import PredictionInitialState from "../components/prediction/PredictionInitialState";
 import PredictionLoadingState from "../components/prediction/PredictionLoadingState";
 import { usePrediction } from "../hooks/usePrediction";
+import { historyService } from "../services/historyService";
 import heroImg from "../assets/hero-stethoscope.png";
 
 const PredictionPage = () => {
   const { data, loading, error, predict } = usePrediction();
+
+  // Save to history when prediction is made
+  React.useEffect(() => {
+    if (data && !loading) {
+      historyService.savePrediction(data);
+    }
+  }, [data, loading]);
 
   return (
     <DashboardLayout>
