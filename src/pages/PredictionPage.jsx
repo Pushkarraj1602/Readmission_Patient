@@ -10,13 +10,24 @@ import heroImg from "../assets/hero-stethoscope.png";
 
 const PredictionPage = () => {
   const { data, loading, error, predict } = usePrediction();
+  const [formData, setFormData] = React.useState(null);
+
+  const handlePredict = async (patientFormData) => {
+    setFormData(patientFormData); // Save form data
+    await predict(patientFormData);
+  };
 
   // Save to history when prediction is made
   React.useEffect(() => {
-    if (data && !loading) {
-      historyService.savePrediction(data);
+    if (data && !loading && formData) {
+      // Merge form data (including patient_name) with prediction result
+      const historyData = {
+        ...data,
+        patient_name: formData.patient_name,
+      };
+      historyService.savePrediction(historyData);
     }
-  }, [data, loading]);
+  }, [data, loading, formData]);
 
   return (
     <DashboardLayout>
@@ -63,7 +74,7 @@ const PredictionPage = () => {
 
       {/* Main Grid - Better spacing */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start max-w-[1600px] mx-auto">
-        <PatientForm onSubmit={predict} loading={loading} />
+        <PatientForm onSubmit={handlePredict} loading={loading} />
         
         <div className="xl:sticky xl:top-6">
           {loading ? (

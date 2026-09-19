@@ -170,8 +170,8 @@ const PatientForm = ({ onSubmit, loading }) => {
                   onChange={(e) => update("model_type")(e.target.value)}
                   className="w-full px-4 py-3 bg-white border-2 border-[var(--color-forest)]/30 rounded-lg text-sm font-semibold text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-forest)] focus:border-[var(--color-forest)] hover:border-[var(--color-forest)]/50 transition-all cursor-pointer shadow-sm"
                 >
-                  <option value="random_forest">🌲 Random Forest (Recommended)</option>
-                  <option value="logistic_regression">📊 Logistic Regression</option>
+                  <option value="random_forest">Random Forest (Recommended)</option>
+                  <option value="logistic_regression">Logistic Regression</option>
                 </select>
               </div>
               
@@ -207,12 +207,6 @@ const PatientForm = ({ onSubmit, loading }) => {
                 </label>
               </div>
             </div>
-            
-            <p className="text-xs text-[var(--color-text-secondary)] mt-3 leading-relaxed">
-              {form.model_type === "random_forest" ? "🌲 High accuracy ensemble method" : "📊 Fast linear classification model"}
-              {" • "}
-              {form.use_rag ? "Analyzing similar historical cases for enhanced accuracy" : "Standard prediction mode"}
-            </p>
           </div>
         </div>
 

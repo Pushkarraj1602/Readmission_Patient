@@ -11,14 +11,14 @@ const DashboardLayout = ({ children }) => {
       </div>
 
       {/* Right side: fixed header + scrollable content */}
-      <div className="ml-[240px] flex-1 flex flex-col h-screen">
+      <div className="ml-[240px] flex-1 flex flex-col">
         {/* Fixed Header */}
         <div className="sticky top-0 z-40 bg-[var(--color-ivory)] px-8 py-3 border-b border-[var(--color-border)]">
           <Header />
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto px-8 py-6">
+        <div className="flex-1 px-8 py-6">
           {children}
         </div>
       </div>
