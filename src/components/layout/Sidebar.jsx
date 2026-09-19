@@ -1,16 +1,21 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Leaf, Activity, FileText, BarChart3, Settings, BookOpen } from "lucide-react";
+import { Leaf, Activity, FileText, BarChart3, Settings, BookOpen, LogOut } from "lucide-react";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
 
+  const handleLogout = () => {
+    localStorage.removeItem("isAuthenticated");
+    navigate("/login");
+  };
+
   return (
     <aside className="w-[240px] bg-[var(--color-forest)] text-white p-6 flex flex-col h-full overflow-y-auto">
       {/* Logo */}
-      <div className="flex items-center gap-3 mb-10 cursor-pointer" onClick={() => navigate("/")}>
+      <div className="flex items-center gap-3 mb-10 cursor-pointer" onClick={() => navigate("/predict")}>
         <div className="text-[var(--color-mint)]">
           <Leaf size={28} />
         </div>
@@ -23,9 +28,9 @@ const Sidebar = () => {
       {/* Navigation */}
       <nav className="flex flex-col gap-2 flex-1">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/predict")}
           className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold mb-1 transition-colors w-full text-left ${
-            isActive("/")
+            isActive("/predict")
               ? "bg-[var(--color-sage-light)] text-[var(--color-forest)]"
               : "text-white/70 hover:text-white hover:bg-white/5"
           }`}
@@ -61,7 +66,7 @@ const Sidebar = () => {
         </button>
       </nav>
 
-      <div className="mt-auto pt-6 border-t border-white/10">
+      <div className="mt-auto pt-6 border-t border-white/10 space-y-2">
         <button
           onClick={() => navigate("/settings")}
           className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full text-left ${
@@ -72,6 +77,13 @@ const Sidebar = () => {
         >
           <Settings size={20} />
           <span>Settings</span>
+        </button>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors w-full text-left text-white/70 hover:text-white hover:bg-red-500/20"
+        >
+          <LogOut size={20} />
+          <span>Logout</span>
         </button>
       </div>
 
