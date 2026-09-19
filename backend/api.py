@@ -111,10 +111,10 @@ def load_artifacts():
             }
         }
 
-    print("✅ All artifacts loaded successfully")
-    print(f"✅ Random Forest model: Loaded")
-    print(f"✅ Logistic Regression model: {'Loaded' if lr_model else 'Will use fallback'}")
-    print(f"✅ Model metrics: {len(model_metrics)} models")
+    print("All artifacts loaded successfully")
+    print(f"Random Forest model: Loaded")
+    print(f"Logistic Regression model: {'Loaded' if lr_model else 'Will use fallback'}")
+    print(f"Model metrics: {len(model_metrics)} models")
 
 
 # ── Request / Response schemas ──
@@ -280,132 +280,168 @@ def get_models_info():
 # ── Generate Report endpoint ──
 @app.post("/generate-report")
 def generate_report(data: dict):
-    """Generate a text-based medical report for download"""
+    """Generate a clean, minimal patient report - only patient info and risk assessment"""
     from datetime import datetime
+    from reportlab.lib.pagesizes import letter
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.units import inch
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+    from reportlab.lib import colors
+    from reportlab.lib.enums import TA_CENTER, TA_LEFT
+    import io
+    import base64
     
-    report = f"""
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    HOSPITAL READMISSION RISK ASSESSMENT                    ║
-║                              CLINICAL REPORT                               ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-
-Report Generated: {datetime.now().strftime("%B %d, %Y at %I:%M %p")}
-Report ID: MR-{datetime.now().strftime("%Y%m%d-%H%M%S")}
-
-─────────────────────────────────────────────────────────────────────────────
- PATIENT INFORMATION
-─────────────────────────────────────────────────────────────────────────────
-
-{data.get('summary', 'N/A')}
-
-─────────────────────────────────────────────────────────────────────────────
- RISK ASSESSMENT
-─────────────────────────────────────────────────────────────────────────────
-
-Readmission Risk Probability:  {data.get('risk_probability', 0) * 100:.1f}%
-Risk Classification:           {"HIGH RISK" if data.get('is_high_risk', False) else "LOW RISK"}
-Similar Case Readmit Rate:     {data.get('similar_case_readmit_rate', 0) * 100:.1f}%
-
-Model Used:                    {data.get('model_used', 'Random Forest')}
-RAG Feature:                   {"Enabled" if data.get('rag_enabled', True) else "Disabled"}
-
-─────────────────────────────────────────────────────────────────────────────
- MODEL PERFORMANCE METRICS
-─────────────────────────────────────────────────────────────────────────────
-
-AUC-ROC Score:                 {data.get('model_metrics', {}).get('auc_roc', 0) * 100:.1f}%
-F1 Score:                      {data.get('model_metrics', {}).get('f1_score', 0) * 100:.1f}%
-Precision:                     {data.get('model_metrics', {}).get('precision', 0) * 100:.1f}%
-Recall:                        {data.get('model_metrics', {}).get('recall', 0) * 100:.1f}%
-
-─────────────────────────────────────────────────────────────────────────────
- CLINICAL RECOMMENDATIONS
-─────────────────────────────────────────────────────────────────────────────
-
-"""
+    # Create PDF buffer
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer, 
+        pagesize=letter, 
+        topMargin=0.6*inch, 
+        bottomMargin=0.5*inch,
+        leftMargin=0.6*inch,
+        rightMargin=0.6*inch
+    )
+    story = []
     
-    if data.get('is_high_risk', False):
-        report += """
-⚠ HIGH RISK PATIENT - Immediate Action Required
-
-Recommended Interventions:
-• Schedule close follow-up within 7 days of discharge
-• Conduct comprehensive medication reconciliation
-• Arrange home health services if appropriate
-• Provide detailed discharge instructions and education
-• Consider care coordination with primary care physician
-• Monitor for early warning signs of deterioration
-• Ensure patient has 24/7 access to clinical support
-
-Additional Considerations:
-• Review and optimize medication regimen
-• Assess social determinants of health
-• Evaluate need for post-acute care services
-• Consider telemedicine follow-up options
-"""
-    else:
-        report += """
-✓ LOW RISK PATIENT - Standard Discharge Protocol
-
-Recommended Actions:
-• Standard follow-up within 14-30 days
-• Provide routine discharge instructions
-• Ensure understanding of medication regimen
-• Schedule appointment with primary care physician
-• Provide emergency contact information
-
-Preventive Measures:
-• Educate on signs and symptoms requiring medical attention
-• Encourage medication adherence
-• Promote healthy lifestyle modifications
-• Ensure patient has necessary prescriptions filled
-"""
-
-    report += """
-─────────────────────────────────────────────────────────────────────────────
- METHODOLOGY
-─────────────────────────────────────────────────────────────────────────────
-
-This prediction was generated using machine learning models trained on the
-UCI Diabetes 130-Hospitals dataset. The analysis incorporates:
-
-• Patient demographic and clinical characteristics
-• Historical admission patterns
-• Medication and procedure history
-"""
-
-    if data.get('rag_enabled', True):
-        report += """• Retrieval-Augmented Generation (RAG) feature: Analysis of 10 most
-  similar historical patient cases to enhance prediction accuracy
-"""
-
-    report += f"""
-Threshold for High Risk Classification: {BEST_THRESHOLD * 100:.0f}%
-
-─────────────────────────────────────────────────────────────────────────────
- DISCLAIMER
-─────────────────────────────────────────────────────────────────────────────
-
-This AI-generated risk assessment is intended to support clinical decision-
-making and should not replace professional medical judgment. All predictions
-should be interpreted in the context of the individual patient's complete
-clinical picture and circumstances.
-
-The treating physician retains full responsibility for patient care decisions
-and should use this tool as one of many inputs in the clinical decision-making
-process.
-
-─────────────────────────────────────────────────────────────────────────────
-
-Generated by MaveRicks Hospital Readmission Risk Prediction System
-Powered by Random Forest & Logistic Regression ML Models with RAG Enhancement
-
-End of Report
-"""
+    # Define colors
+    PRIMARY_COLOR = colors.HexColor('#1B4332')
+    ACCENT_COLOR = colors.HexColor('#52796F')
+    LIGHT_GREEN = colors.HexColor('#D8F3DC')
+    MEDIUM_GREEN = colors.HexColor('#95D5B2')
+    
+    # Custom styles
+    header_style = ParagraphStyle(
+        'Header',
+        fontName='Helvetica-Bold',
+        fontSize=24,
+        textColor=PRIMARY_COLOR,
+        spaceAfter=8,
+        alignment=TA_CENTER
+    )
+    
+    subheader_style = ParagraphStyle(
+        'SubHeader',
+        fontName='Helvetica',
+        fontSize=11,
+        textColor=ACCENT_COLOR,
+        spaceAfter=25,
+        alignment=TA_CENTER
+    )
+    
+    section_heading = ParagraphStyle(
+        'SectionHeading',
+        fontName='Helvetica-Bold',
+        fontSize=14,
+        textColor=colors.white,
+        spaceAfter=0
+    )
+    
+    body_text = ParagraphStyle(
+        'Body',
+        fontName='Helvetica',
+        fontSize=11,
+        textColor=PRIMARY_COLOR,
+        spaceAfter=8,
+        leading=15
+    )
+    
+    footer_style = ParagraphStyle(
+        'Footer',
+        fontName='Helvetica-Oblique',
+        fontSize=9,
+        textColor=ACCENT_COLOR,
+        alignment=TA_CENTER,
+        spaceAfter=0
+    )
+    
+    # Header
+    story.append(Paragraph("CLINICAL REPORT", header_style))
+    story.append(Spacer(1, 0.15*inch))  # Gap between Clinical Report and Generated line
+    
+    # Report metadata with spacing
+    metadata_text = f"Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')} | Report ID: MR-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+    story.append(Paragraph(metadata_text, subheader_style))
+    story.append(Spacer(1, 0.2*inch))
+    
+    # Patient Information Section
+    patient_header = Table([[Paragraph("PATIENT INFORMATION", section_heading)]], colWidths=[6.8*inch])
+    patient_header.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), PRIMARY_COLOR),
+        ('PADDING', (0, 0), (-1, -1), 8),
+    ]))
+    story.append(patient_header)
+    story.append(Spacer(1, 0.12*inch))
+    
+    patient_name = data.get('patient_name', 'N/A')
+    summary = data.get('summary', 'N/A')
+    
+    # Patient info in table format for consistent padding like Risk Assessment
+    patient_data = [
+        [Paragraph(f"<b>Patient Name:</b> {patient_name}", body_text)],
+        [Paragraph(f"<b>Clinical Summary:</b> {summary}", body_text)]
+    ]
+    
+    patient_table = Table(patient_data, colWidths=[6.8*inch])
+    patient_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), LIGHT_GREEN),
+        ('GRID', (0, 0), (-1, -1), 1, MEDIUM_GREEN),
+        ('PADDING', (0, 0), (-1, -1), 10),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+    ]))
+    story.append(patient_table)
+    story.append(Spacer(1, 0.25*inch))
+    
+    # Risk Assessment Section
+    risk_header = Table([[Paragraph("RISK ASSESSMENT", section_heading)]], colWidths=[6.8*inch])
+    risk_header.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), PRIMARY_COLOR),
+        ('PADDING', (0, 0), (-1, -1), 8),
+    ]))
+    story.append(risk_header)
+    story.append(Spacer(1, 0.12*inch))
+    
+    # Risk data
+    risk_prob = data.get('risk_probability', 0) * 100
+    is_high_risk = data.get('is_high_risk', False)
+    risk_color = colors.HexColor('#DC2626') if is_high_risk else colors.HexColor('#16A34A')
+    
+    risk_data = [
+        [Paragraph("<b>Readmission Risk Probability:</b>", body_text), 
+         Paragraph(f"<b><font color='#{risk_color.hexval()[2:]}'>{risk_prob:.1f}%</font></b>", body_text)],
+        [Paragraph("<b>Risk Classification:</b>", body_text),
+         Paragraph(f"<b><font color='#{risk_color.hexval()[2:]}'>{'HIGH RISK' if is_high_risk else 'LOW RISK'}</font></b>", body_text)],
+        [Paragraph("<b>Similar Historical Cases:</b>", body_text),
+         Paragraph(f"{data.get('similar_case_readmit_rate', 0) * 100:.1f}% readmission rate", body_text)],
+    ]
+    
+    risk_table = Table(risk_data, colWidths=[3.2*inch, 3.6*inch])
+    risk_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), LIGHT_GREEN),
+        ('GRID', (0, 0), (-1, -1), 1, MEDIUM_GREEN),
+        ('PADDING', (0, 0), (-1, -1), 10),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
+    story.append(risk_table)
+    story.append(Spacer(1, 0.4*inch))
+    
+    # Footer
+    story.append(Paragraph("Generated by MaveRicks Hospital Readmission Risk Prediction System", footer_style))
+    story.append(Paragraph("Powered by Advanced Machine Learning Models with RAG Enhancement", footer_style))
+    
+    # Build PDF
+    doc.build(story)
+    
+    # Get PDF content
+    pdf_content = buffer.getvalue()
+    buffer.close()
+    
+    # Encode to base64
+    pdf_base64 = base64.b64encode(pdf_content).decode('utf-8')
     
     return {
-        "report": report,
-        "filename": f"readmission_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+        "report": pdf_base64,
+        "filename": f"readmission_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+        "content_type": "application/pdf"
     }
 
 

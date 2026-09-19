@@ -4,7 +4,7 @@ import { RiskScore, RiskBadge, SimilarCaseCard } from "./RiskIndicators";
 import { PatientSummary, ClinicalInsight } from "./InsightCards";
 import { Activity, Clock, Brain, Target, TrendingUp, Award, Download } from "lucide-react";
 
-const PredictionResults = ({ data }) => {
+const PredictionResults = ({ data, patientName }) => {
   if (!data) return null;
 
   const metrics = data.model_metrics || {};
@@ -12,12 +12,19 @@ const PredictionResults = ({ data }) => {
   const handleDownloadReport = async () => {
     try {
       const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+      
+      // Include patient_name in the data being sent
+      const reportData = {
+        ...data,
+        patient_name: patientName || data.patient_name || 'N/A'
+      };
+      
       const response = await fetch(`${BACKEND_URL}/generate-report`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(reportData),
       });
 
       if (!response.ok) {
@@ -26,8 +33,15 @@ const PredictionResults = ({ data }) => {
 
       const result = await response.json();
       
-      // Create a blob and download
-      const blob = new Blob([result.report], { type: "text/plain" });
+      // Decode base64 PDF content
+      const binaryString = window.atob(result.report);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      
+      // Create blob and download
+      const blob = new Blob([bytes], { type: result.content_type || "application/pdf" });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;

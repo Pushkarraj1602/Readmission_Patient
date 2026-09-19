@@ -80,7 +80,7 @@ const PredictionPage = () => {
             {loading ? (
               <PredictionLoadingState />
             ) : data ? (
-              <PredictionResults data={data} />
+              <PredictionResults data={data} patientName={formData?.patient_name} />
             ) : (
               <PredictionInitialState />
             )}
